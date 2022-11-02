@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.bulbasaur {
+  border-radius: 10px;
+  width: 240px;
+  background-color: #fff;
+}
+
+.bulbasaur img {
+  width: 240px;
+}
+
+.bulbasaur h3 {
+  color: #282c34;
+}
+
+.bulbasaur p {
+  color: #282c34;
+  background-color: rgba(0, 0, 0, 0.25);
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 18px;
+  margin: 0 auto;
+}
