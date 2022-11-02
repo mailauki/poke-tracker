@@ -1,5 +1,15 @@
 .App {
   text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.App h1 {
+  font-size: calc(10px + 2vmin);
 }
 
 .App-logo {
@@ -37,21 +47,45 @@
   }
 }
 
-.bulbasaur {
+.Pokemon {
+  /* display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center; */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.PokeCard {
   border-radius: 10px;
-  width: 240px;
+  /* width: 240px; */
+  width: 180px;
+  height: 180px;
   background-color: #fff;
+  margin: 10px;
+  /* padding: 10px; */
+  background-repeat: no-repeat;
+  background-position: center 0;
+  background-size: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  cursor: pointer;
 }
 
-.bulbasaur img {
-  width: 240px;
+.PokeCard img {
+  /* width: 240px; */
+  object-fit: contain;
+  width: 80%;
 }
 
-.bulbasaur h3 {
+.PokeCard h3 {
   color: #282c34;
+  margin: 4px auto 14px auto;
 }
 
-.bulbasaur p {
+.PokeCard p {
   color: #282c34;
   background-color: rgba(0, 0, 0, 0.25);
   width: fit-content;
