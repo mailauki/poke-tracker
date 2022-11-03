@@ -29,15 +29,16 @@
   background-color: #fff;
   margin: 10px;
   padding: 10px;
-  background-repeat: no-repeat;
+  /* background-repeat: no-repeat;
   background-position: center 0;
-  background-size: 60%;
+  background-size: 60%; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   cursor: pointer;
-  z-index: 1;
+  z-index: 0;
+  position: relative;
 }
 
 .info {
@@ -52,12 +53,16 @@
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  z-index: 2;
 }
 
 .PokeCard img {
-  width: 50%;
+  width: 60%;
   align-items: center;
-  margin: 0 auto;
+  margin: 0 calc(40% / 2 - 10px);
+  position: absolute;
+  top: 0;
+  z-index: 1;
 }
 
 .PokeCard h3 {

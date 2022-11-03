@@ -1,14 +1,14 @@
 import React from 'react';
 
 interface Props {
-  // number: number,
   pokemon: {
     name: string, 
     url: string
   }
+  show: string
 }
 
-export default function PokeCard({pokemon}: Props) {
+export default function PokeCard({ pokemon, show }: Props) {
   const [bulbasaur, setBulbasaur] = React.useState({id: 0, name: "", sprites: {back_default: "", front_default: ""}})
   const [clicked, setClicked] = React.useState(false)
   const [checked, setChecked] = React.useState(false)
@@ -18,7 +18,6 @@ export default function PokeCard({pokemon}: Props) {
       fetch(pokemon.url)
       .then((r) => r.json())
       .then((data) => {
-        // console.log(data)
         setBulbasaur(data)
       })
     }
@@ -40,50 +39,112 @@ export default function PokeCard({pokemon}: Props) {
   }
 
   return (
-    <div 
-      className="PokeCard" 
-      onClick={handleClick}
-      // style={{backgroundImage: `url(${clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default})`}}
-      // style={{backgroundImage: `url(${bulbasaur.sprites.front_default})`, filter: "saturate(0) contrast(0)"}}
-      // style={{
-      //   maskImage: `url(${bulbasaur.sprites.front_default})`, 
-      //   WebkitMaskImage: `url(${bulbasaur.sprites.front_default})`, 
-      //   maskSize: "70%", 
-      //   WebkitMaskSize: "70%", 
-      //   maskRepeat: "no-repeat",
-      //   WebkitMaskRepeat: "no-repeat",
-      //   maskType: "alpha"
-      // }}
-    >
-      {/* <div
-        style={{
-          width: "100%",
-          backgroundColor: "#ccc",
-          maskImage: `url(${bulbasaur.sprites.front_default})`, 
-          WebkitMaskImage: `url(${bulbasaur.sprites.front_default})`, 
-          maskSize: "70%", 
-          WebkitMaskSize: "70%", 
-          maskRepeat: "no-repeat",
-          WebkitMaskRepeat: "no-repeat",
-          maskType: "alpha"
-        }}
-      > */}
-        <input type="checkbox" style={{zIndex: 2}} checked={checked} onChange={() => setChecked(!checked)} />
-        <img 
-          src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
-          style={{
-            filter: !checked ? "saturate(0) contrast(0)" : "none"
-          }} 
-        />
-        <div className="info">
-          <p>#{padZero(bulbasaur.id)}</p>
-          <h3
-            style={{
-              filter: !checked ? "opacity(0)" : "none"
-            }}
-          >{pokemon.name}</h3>
-        </div>
-      {/* </div> */}
-    </div>
+    <>
+      {(() => {
+        switch(show) {
+          case "collected": {
+            return (
+              checked ? (
+                <div 
+                  className="PokeCard" 
+                  onClick={handleClick}
+                >
+                  <input 
+                    type="checkbox" 
+                    checked={checked} 
+                    onChange={() => setChecked(!checked)} 
+                    style={{ zIndex: 3, width: "20px", height: "20px" }} 
+                  />
+                  <div className="info">
+                    <p>#{padZero(bulbasaur.id)}</p>
+                    <h3
+                      style={{
+                        filter: !checked ? "opacity(0)" : "none"
+                      }}
+                    >
+                      {pokemon.name}
+                    </h3>
+                  </div>
+                  <img 
+                    src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
+                    style={{
+                      filter: !checked ? "saturate(0) contrast(0)" : "none"
+                    }} 
+                  />
+                </div>
+              ) : (
+                <></>
+              )
+            )
+          }
+          case "missing": {
+            return (
+              !checked ? (
+                <div 
+                  className="PokeCard" 
+                  onClick={handleClick}
+                >
+                  <input 
+                    type="checkbox" 
+                    checked={checked} 
+                    onChange={() => setChecked(!checked)} 
+                    style={{ zIndex: 3, width: "20px", height: "20px" }} 
+                  />
+                  <div className="info">
+                    <p>#{padZero(bulbasaur.id)}</p>
+                    <h3
+                      style={{
+                        filter: !checked ? "opacity(0)" : "none"
+                      }}
+                    >
+                      {pokemon.name}
+                    </h3>
+                  </div>
+                  <img 
+                    src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
+                    style={{
+                      filter: !checked ? "saturate(0) contrast(0)" : "none"
+                    }} 
+                  />
+                </div>
+              ) : (
+                <></>
+              )
+            )
+          }
+          case "all": {
+            return (
+              <div 
+                className="PokeCard" 
+                onClick={handleClick}
+              >
+                <input 
+                  type="checkbox" 
+                  checked={checked} 
+                  onChange={() => setChecked(!checked)} 
+                  style={{ zIndex: 3, width: "20px", height: "20px" }} 
+                />
+                <div className="info">
+                  <p>#{padZero(bulbasaur.id)}</p>
+                  <h3
+                    style={{
+                      filter: !checked ? "opacity(0)" : "none"
+                    }}
+                  >
+                    {pokemon.name}
+                  </h3>
+                </div>
+                <img 
+                  src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
+                  style={{
+                    filter: !checked ? "saturate(0) contrast(0)" : "none"
+                  }} 
+                />
+              </div>
+            )
+          }
+        }
+      })()}
+    </>
   )
 }
