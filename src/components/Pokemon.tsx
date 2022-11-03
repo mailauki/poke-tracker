@@ -7,16 +7,20 @@ interface Props {
     url: string
   }
   show: string
+  number: number
 }
 
-export default function Pokemon({ pokemon, show }: Props) {
-  const [bulbasaur, setBulbasaur] = React.useState({id: 0, name: "", sprites: {back_default: "", front_default: ""}})
+export default function Pokemon({ pokemon, show, number }: Props) {
+  const [bulbasaur, setBulbasaur] = React.useState({name: "", sprites: {back_default: "", front_default: ""}})
   const [clicked, setClicked] = React.useState(false)
   const [checked, setChecked] = React.useState(false)
 
   React.useEffect(() => {
+    setChecked(false)
+    setClicked(false)
+
     if(pokemon) {
-      fetch(pokemon.url)
+      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
       .then((r) => r.json())
       .then((data) => {
         setBulbasaur(data)
@@ -54,7 +58,7 @@ export default function Pokemon({ pokemon, show }: Props) {
           style={{ zIndex: 3, width: "20px", height: "20px" }} 
         />
         <div className="info">
-          <p>#{padZero(bulbasaur.id)}</p>
+          <p>#{padZero(number)}</p>
           <h3
             style={{
               filter: !checked ? "opacity(0)" : "none"
@@ -68,6 +72,7 @@ export default function Pokemon({ pokemon, show }: Props) {
           style={{
             filter: !checked ? "saturate(0) contrast(0)" : "none"
           }} 
+          loading="lazy"
         />
       </div>
     )

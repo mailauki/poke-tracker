@@ -2,12 +2,10 @@ import React from 'react';
 
 interface Props {
   pokemon: {
-    name: any, 
-    url: any
+    name: string, 
+    url: string
   }
-  // name: string
   number: number
-  // key: number
 }
 
 export default function PokeCard({ pokemon, number }: Props) {

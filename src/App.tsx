@@ -7,7 +7,7 @@ function App() {
   const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
   const [games, setGames] = React.useState([{name: "", url: ""}])
   const [show, setShow] = React.useState("all")
-  const [selectGame, setSelectGame] = React.useState(games[0].name)
+  const [selectGame, setSelectGame] = React.useState("national")
   const [showGame, setShowGame] = React.useState({name: "", pokemon_entries: [{entry_number: 0, pokemon_species: {name: "", url: ""}}]})
 
   React.useEffect(() => {
@@ -25,14 +25,20 @@ function App() {
   }, [])
 
   React.useEffect(() => {
-    if(selectGame) {
+    if(selectGame !== "national") {
       fetch(`https://pokeapi.co/api/v2/version-group/${selectGame}`)
       .then((r) => r.json())
       .then((data) => {
-        // console.log(data.pokedexes[0].url)
         fetch(data.pokedexes[0].url)
         .then((r) => r.json())
         .then((pokedex) => setShowGame(pokedex))
+      })
+    } else {
+      fetch("https://pokeapi.co/api/v2/pokedex/1")
+      .then((r) => r.json())
+      .then((pokedex) => {
+        // console.log(pokedex.pokemon_entries[0].pokemon_species.name)
+        setShowGame(pokedex)
       })
     }
   }, [selectGame])
@@ -67,13 +73,23 @@ function App() {
     const target = e.target as HTMLSelectElement
     setSelectGame(target.value)
   }
+
+  const regionName = (
+    showGame.name.includes("-") ? (
+      showGame.name.split("-").map((word) => (
+        word.charAt(0).toUpperCase() + word.slice(1)
+      )).join(" ")
+    ) : (
+      showGame.name.charAt(0).toUpperCase() + showGame.name.slice(1)
+    )
+  ) 
   
   return (
     <div className="App">
       <h1>PokeTracker</h1>
-      {/* <h2>Kanto</h2> */}
-      {/* {console.log(showGame)} */}
+      <h2>{regionName}</h2> 
       <select name="games" onChange={handleChangeGame}>
+        <option value="national" selected={selectGame === "national" ? true : false}>National</option>
         {games.map((game) => {
           const nameSplit = game.name.split("-")
           const nameInsertAt = Math.round(nameSplit.length / 2)
@@ -106,14 +122,16 @@ function App() {
       <div className="Pokemon">
         {showGame.name !== "" ? (
           showGame.pokemon_entries.map((mon) => (
-            <PokeCard 
+            <Pokemon 
               key={mon.entry_number}
               pokemon={mon.pokemon_species}
               number={mon.entry_number} 
+              show={show}
             />
           ))
         ) : (
-          pokemon.map((mon) => <Pokemon key={mon.name} pokemon={mon} show={show} />)
+          // pokemon.map((mon) => <Pokemon key={mon.name} pokemon={mon} show={show} />)
+          <></>
         )}
       </div>
     </div>
