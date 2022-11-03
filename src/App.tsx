@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import PokeCard from './components/PokeCard';
+import Pokemon from './components/Pokemon';
 
 function App() {
   const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
@@ -55,7 +56,7 @@ function App() {
               alignItems: "center" 
             }}
           >
-            <label>Show Missing: </label>
+            <label>Missing </label>
             <input 
               type="radio" 
               value="missing"
@@ -74,7 +75,7 @@ function App() {
               alignItems: "center" 
             }}
           >
-            <label>Show Collected: </label>
+            <label>Collected </label>
             <input 
               type="radio" 
               value="collected"
@@ -93,7 +94,7 @@ function App() {
               alignItems: "center" 
             }}
           >
-            <label>Show All: </label>
+            <label>All </label>
             <input 
               type="radio" 
               value="all"
@@ -107,7 +108,7 @@ function App() {
           </div>
         </div>
         <div className="Pokemon">
-          {pokemon.map((mon) => <PokeCard pokemon={mon} show={show} />)}
+          {pokemon.map((mon) => <Pokemon key={mon.name} pokemon={mon} show={show} />)}
         </div>
     </div>
   );
