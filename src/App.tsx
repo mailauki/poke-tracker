@@ -5,9 +5,10 @@ import Pokemon from './components/Pokemon';
 
 function App() {
   const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
-  const [showCollected, setShowCollected] = React.useState(false)
-  const [showMissing, setShowMissing] = React.useState(false)
+  const [games, setGames] = React.useState([{name: "", url: ""}])
   const [show, setShow] = React.useState("all")
+  const [selectGame, setSelectGame] = React.useState(games[0].name)
+  const [showGame, setShowGame] = React.useState({name: "", pokemon_entries: [{entry_number: 0, pokemon_species: {name: "", url: ""}}]})
 
   React.useEffect(() => {
     fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
@@ -15,101 +16,106 @@ function App() {
     .then((data) => {
       setPokemon(data.results)
     })
+
+    fetch("https://pokeapi.co/api/v2/version-group")
+    .then((r) => r.json())
+    .then((data) => {
+      setGames(data.results)
+    })
   }, [])
+
+  React.useEffect(() => {
+    if(selectGame) {
+      fetch(`https://pokeapi.co/api/v2/version-group/${selectGame}`)
+      .then((r) => r.json())
+      .then((data) => {
+        // console.log(data.pokedexes[0].url)
+        fetch(data.pokedexes[0].url)
+        .then((r) => r.json())
+        .then((pokedex) => setShowGame(pokedex))
+      })
+    }
+  }, [selectGame])
+
+  function ShowFilterInput({name}: {name: string}) {
+    const capName = name.charAt(0).toUpperCase() + name.slice(1)
+
+    return (
+      <div 
+        style={{ 
+          display: "flex",
+          flexDirection: "row", 
+          alignItems: "center" 
+        }}
+      >
+        <label>{capName}</label>
+        <input 
+          type="radio" 
+          value={name}
+          checked={show === name ? true : false}
+          onChange={(e) => setShow(e.target.value)}
+          style={{
+            width: "20px",
+            height: "20px"
+          }}
+        />
+      </div>
+    )
+  }
+
+  function handleChangeGame(e: React.ChangeEvent<HTMLSelectElement>) {
+    const target = e.target as HTMLSelectElement
+    setSelectGame(target.value)
+  }
   
   return (
     <div className="App">
-        <h1>PokeTracker</h1>
-          <h2>Kanto</h2>
-        <div 
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-evenly",
-            alignItems: "center"
-          }}
-        >
-          {/* <div 
-            style={{ 
-              display: "flex",
-              flexDirection: "row", 
-              alignItems: "center" 
-            }}
-          >
-            <label>Show Collecked: </label>
-            <input 
-              type="checkbox" 
-              checked={showCollected} 
-              onChange={() => setShowCollected(!showCollected)} 
-              style={{
-                width: "20px",
-                height: "20px"
-              }}
+      <h1>PokeTracker</h1>
+      {/* <h2>Kanto</h2> */}
+      {/* {console.log(showGame)} */}
+      <select name="games" onChange={handleChangeGame}>
+        {games.map((game) => {
+          const nameSplit = game.name.split("-")
+          const nameInsertAt = Math.round(nameSplit.length / 2)
+          if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
+          const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
+          return (
+            <option 
+              value={game.name} 
+              selected={selectGame === capName ? true : false}
+            >
+              {capName}
+            </option>
+          )
+        })}
+      </select>
+      <div 
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "space-evenly",
+          alignItems: "center"
+        }}
+      >
+        <ShowFilterInput name="missing" />
+        <ShowFilterInput name="collected" />
+        <ShowFilterInput name="all" />
+      </div>
+      <div className="Pokemon">
+        {showGame.name !== "" ? (
+          showGame.pokemon_entries.map((mon) => (
+            <PokeCard 
+              key={mon.entry_number}
+              pokemon={mon.pokemon_species}
+              number={mon.entry_number} 
             />
-          </div> */}
-          <div 
-            style={{ 
-              display: "flex",
-              flexDirection: "row", 
-              alignItems: "center" 
-            }}
-          >
-            <label>Missing </label>
-            <input 
-              type="radio" 
-              value="missing"
-              checked={show === "missing" ? true : false}
-              onChange={(e) => setShow(e.target.value)}
-              style={{
-                width: "20px",
-                height: "20px"
-              }}
-            />
-          </div>
-          <div 
-            style={{ 
-              display: "flex",
-              flexDirection: "row", 
-              alignItems: "center" 
-            }}
-          >
-            <label>Collected </label>
-            <input 
-              type="radio" 
-              value="collected"
-              checked={show === "collected" ? true : false}
-              onChange={(e) => setShow(e.target.value)}
-              style={{
-                width: "20px",
-                height: "20px"
-              }}
-            />
-          </div>
-          <div 
-            style={{ 
-              display: "flex",
-              flexDirection: "row", 
-              alignItems: "center" 
-            }}
-          >
-            <label>All </label>
-            <input 
-              type="radio" 
-              value="all"
-              checked={show === "all" ? true : false}
-              onChange={(e) => setShow(e.target.value)}
-              style={{
-                width: "20px",
-                height: "20px"
-              }}
-            />
-          </div>
-        </div>
-        <div className="Pokemon">
-          {pokemon.map((mon) => <Pokemon key={mon.name} pokemon={mon} show={show} />)}
-        </div>
+          ))
+        ) : (
+          pokemon.map((mon) => <Pokemon key={mon.name} pokemon={mon} show={show} />)
+        )}
+      </div>
     </div>
   );
 }

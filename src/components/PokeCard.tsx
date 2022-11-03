@@ -2,26 +2,31 @@ import React from 'react';
 
 interface Props {
   pokemon: {
-    name: string, 
-    url: string
+    name: any, 
+    url: any
   }
-  onCheck: Function
+  // name: string
+  number: number
+  // key: number
 }
 
-export default function PokeCard({ pokemon, onCheck }: Props) {
-  const [bulbasaur, setBulbasaur] = React.useState({id: 0, name: "", sprites: {back_default: "", front_default: ""}})
+export default function PokeCard({ pokemon, number }: Props) {
+  const [bulbasaur, setBulbasaur] = React.useState({name: "", sprites: {back_default: "", front_default: ""}})
   const [clicked, setClicked] = React.useState(false)
   const [checked, setChecked] = React.useState(false)
 
   React.useEffect(() => {
-    if(pokemon) {
-      fetch(pokemon.url)
+    setChecked(false)
+    setClicked(false)
+
+    if(pokemon.name) {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
       .then((r) => r.json())
       .then((data) => {
         setBulbasaur(data)
       })
     }
-  }, [pokemon])
+  }, [pokemon.name])
 
   function padZero(id: number) {
     if(id <= 9) {
@@ -48,12 +53,11 @@ export default function PokeCard({ pokemon, onCheck }: Props) {
         checked={checked} 
         onChange={() => {
           setChecked(!checked)
-          onCheck(!checked)
         }} 
         style={{ zIndex: 3, width: "20px", height: "20px" }} 
       />
       <div className="info">
-        <p>#{padZero(bulbasaur.id)}</p>
+        <p>#{padZero(number)}</p>
         <h3
           style={{
             filter: !checked ? "opacity(0)" : "none"
