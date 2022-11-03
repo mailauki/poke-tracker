@@ -40,13 +40,24 @@
   z-index: 1;
 }
 
-.PokeCard div {
+.info {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   color: #282c34;
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.PokeCard img {
+  width: 50%;
+  align-items: center;
+  margin: 0 auto;
 }
 
 .PokeCard h3 {
