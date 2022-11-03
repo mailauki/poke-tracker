@@ -17,8 +17,7 @@ export default function PokeCard({pokemon}: Props) {
       fetch(pokemon.url)
       .then((r) => r.json())
       .then((data) => {
-        console.log(data)
-        // setBulbasaur({number: data.order, name: data.name, sprites: data.sprites})
+        // console.log(data)
         setBulbasaur(data)
       })
     }
@@ -34,16 +33,22 @@ export default function PokeCard({pokemon}: Props) {
     else return id
   }
 
+  function handleClick(e: React.MouseEvent<HTMLInputElement>) {
+    const target = e.target as HTMLInputElement
+    if(target.tagName !== "INPUT") setClicked(!clicked) 
+  }
+
   return (
     <div 
       className="PokeCard" 
-      onClick={() => setClicked(!clicked)}
+      onClick={handleClick}
       style={{backgroundImage: `url(${clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default})`}}
     >
-      {/* <img src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} alt={bulbasaur.name} /> */}
-      {/* <img src={bulbasaur.sprites.front_default ? bulbasaur.sprites.front_default: ""} alt={bulbasaur.name} /> */}
-      <p>#{padZero(bulbasaur.id)}</p>
-      <h3>{pokemon.name}</h3>
+      <input type="checkbox" style={{zIndex: 2}} />
+      <div className="info">
+        <p>#{padZero(bulbasaur.id)}</p>
+        <h3>{pokemon.name}</h3>
+      </div>
     </div>
   )
 }

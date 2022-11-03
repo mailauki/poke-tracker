@@ -12,45 +12,9 @@
   font-size: calc(10px + 2vmin);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .Pokemon {
   /* display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  justify-content: center; */
+  grid-template-columns: repeat(3, 1fr); */
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -60,33 +24,37 @@
 .PokeCard {
   border-radius: 10px;
   /* width: 240px; */
-  width: 180px;
-  height: 180px;
+  width: 160px;
+  height: 160px;
   background-color: #fff;
   margin: 10px;
-  /* padding: 10px; */
+  padding: 10px;
   background-repeat: no-repeat;
   background-position: center 0;
   background-size: 60%;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: space-between;
+  align-items: flex-start;
   cursor: pointer;
+  z-index: 1;
 }
 
-.PokeCard img {
-  /* width: 240px; */
-  object-fit: contain;
-  width: 80%;
+.PokeCard div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  color: #282c34;
 }
 
 .PokeCard h3 {
-  color: #282c34;
-  margin: 4px auto 14px auto;
+  /* margin: 4px auto 14px auto; */
+  margin: 4px auto;
 }
 
 .PokeCard p {
-  color: #282c34;
   background-color: rgba(0, 0, 0, 0.25);
   width: fit-content;
   padding: 4px 8px;
