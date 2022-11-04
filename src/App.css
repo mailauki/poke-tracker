@@ -12,6 +12,14 @@
   font-size: calc(10px + 2vmin);
 } */
 
+.Header {
+  position: sticky;
+  top: 0;
+  background-color: #282c34;
+  width: 100%;
+  z-index: 1;
+}
+
 .Pokemon {
   /* display: grid;
   grid-template-columns: repeat(3, 1fr); */

@@ -92,44 +92,50 @@ function App() {
   
   return (
     <div className="App">
-      <h1>PokeTracker</h1>
-      <select name="games" onChange={handleChangeGame}>
-        <option value="national" selected={selectGame === "national" ? true : false}>National</option>
-        {games.map((game) => {
-          const nameSplit = game.name.split("-")
-          const nameInsertAt = Math.round(nameSplit.length / 2)
-          if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
-          const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
-          return (
-            <option 
-              value={game.name} 
-              selected={selectGame === capName ? true : false}
-            >
-              {capName}
-            </option>
-          )
-        })}
-      </select>
-      <div 
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-evenly",
-          alignItems: "center"
-        }}
-      >
-        <ShowFilterInput name="missing" />
-        <ShowFilterInput name="collected" />
-        <ShowFilterInput name="all" />
+      <div className="Header">
+        <h1>PokeTracker</h1>
+        <select 
+          name="games" 
+          onChange={handleChangeGame}
+          style={{ padding: "6px", margin: "10px", width: "70%" }}
+        >
+          <option value="national" selected={selectGame === "national" ? true : false}>National</option>
+          {games.map((game) => {
+            const nameSplit = game.name.split("-")
+            const nameInsertAt = Math.round(nameSplit.length / 2)
+            if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
+            const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
+            return (
+              <option 
+                value={game.name} 
+                selected={selectGame === capName ? true : false}
+              >
+                {capName}
+              </option>
+            )
+          })}
+        </select>
+        <div 
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-evenly",
+            alignItems: "center"
+          }}
+        >
+          <ShowFilterInput name="missing" />
+          <ShowFilterInput name="collected" />
+          <ShowFilterInput name="all" />
+        </div>
+        <h2>{loading ? "Loading..." : regionName}</h2> 
       </div>
+
       {loading ? (
-        <h2>Loading...</h2>
+        <></>
       ) : (
         <>
-          <h2>{regionName}</h2> 
-          
           <div className="Pokemon">
             {showGame.name !== "" ? (
               showGame.pokemon_entries.map((mon) => (
