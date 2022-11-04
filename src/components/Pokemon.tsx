@@ -14,16 +14,20 @@ export default function Pokemon({ pokemon, show, number }: Props) {
   const [bulbasaur, setBulbasaur] = React.useState({name: "", sprites: {back_default: "", front_default: ""}})
   const [clicked, setClicked] = React.useState(false)
   const [checked, setChecked] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
     setChecked(false)
     setClicked(false)
 
     if(pokemon) {
+      setLoading(true)
+
       fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
       .then((r) => r.json())
       .then((data) => {
         setBulbasaur(data)
+        setLoading(false)
       })
     }
   }, [pokemon])
@@ -49,31 +53,37 @@ export default function Pokemon({ pokemon, show, number }: Props) {
         className="PokeCard" 
         onClick={handleClick}
       >
-        <input 
-          type="checkbox" 
-          checked={checked} 
-          onChange={() => {
-            setChecked(!checked)
-          }} 
-          style={{ zIndex: 3, width: "20px", height: "20px" }} 
-        />
-        <div className="info">
-          <p>#{padZero(number)}</p>
-          <h3
-            style={{
-              filter: !checked ? "opacity(0)" : "none"
-            }}
-          >
-            {pokemon.name}
-          </h3>
-        </div>
-        <img 
-          src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
-          style={{
-            filter: !checked ? "saturate(0) contrast(0)" : "none"
-          }} 
-          loading="lazy"
-        />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <input 
+              type="checkbox" 
+              checked={checked} 
+              onChange={() => {
+                setChecked(!checked)
+              }} 
+              style={{ zIndex: 3, width: "20px", height: "20px" }} 
+            />
+            <div className="info">
+              <p>#{padZero(number)}</p>
+              <h3
+                style={{
+                  filter: !checked ? "opacity(0)" : "none"
+                }}
+              >
+                {pokemon.name}
+              </h3>
+            </div>
+            <img 
+              src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
+              style={{
+                filter: !checked ? "saturate(0) contrast(0)" : "none"
+              }} 
+              loading="lazy"
+            />
+          </>
+        )}
       </div>
     )
   }

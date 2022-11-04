@@ -4,18 +4,19 @@ import PokeCard from './components/PokeCard';
 import Pokemon from './components/Pokemon';
 
 function App() {
-  const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
+  // const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
   const [games, setGames] = React.useState([{name: "", url: ""}])
   const [show, setShow] = React.useState("all")
   const [selectGame, setSelectGame] = React.useState("national")
   const [showGame, setShowGame] = React.useState({name: "", pokemon_entries: [{entry_number: 0, pokemon_species: {name: "", url: ""}}]})
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
-    fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
-    .then((r) => r.json())
-    .then((data) => {
-      setPokemon(data.results)
-    })
+    // fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
+    // .then((r) => r.json())
+    // .then((data) => {
+    //   setPokemon(data.results)
+    // })
 
     fetch("https://pokeapi.co/api/v2/version-group")
     .then((r) => r.json())
@@ -25,20 +26,25 @@ function App() {
   }, [])
 
   React.useEffect(() => {
+    setLoading(true)
+      
     if(selectGame !== "national") {
       fetch(`https://pokeapi.co/api/v2/version-group/${selectGame}`)
       .then((r) => r.json())
       .then((data) => {
         fetch(data.pokedexes[0].url)
         .then((r) => r.json())
-        .then((pokedex) => setShowGame(pokedex))
+        .then((pokedex) => {
+          setShowGame(pokedex)
+          setLoading(false)
+        })
       })
     } else {
       fetch("https://pokeapi.co/api/v2/pokedex/1")
       .then((r) => r.json())
       .then((pokedex) => {
-        // console.log(pokedex.pokemon_entries[0].pokemon_species.name)
         setShowGame(pokedex)
+        setLoading(false)
       })
     }
   }, [selectGame])
@@ -87,7 +93,6 @@ function App() {
   return (
     <div className="App">
       <h1>PokeTracker</h1>
-      <h2>{regionName}</h2> 
       <select name="games" onChange={handleChangeGame}>
         <option value="national" selected={selectGame === "national" ? true : false}>National</option>
         {games.map((game) => {
@@ -119,21 +124,28 @@ function App() {
         <ShowFilterInput name="collected" />
         <ShowFilterInput name="all" />
       </div>
-      <div className="Pokemon">
-        {showGame.name !== "" ? (
-          showGame.pokemon_entries.map((mon) => (
-            <Pokemon 
-              key={mon.entry_number}
-              pokemon={mon.pokemon_species}
-              number={mon.entry_number} 
-              show={show}
-            />
-          ))
-        ) : (
-          // pokemon.map((mon) => <Pokemon key={mon.name} pokemon={mon} show={show} />)
-          <></>
-        )}
-      </div>
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : (
+        <>
+          <h2>{regionName}</h2> 
+          
+          <div className="Pokemon">
+            {showGame.name !== "" ? (
+              showGame.pokemon_entries.map((mon) => (
+                <Pokemon 
+                  key={mon.entry_number}
+                  pokemon={mon.pokemon_species}
+                  number={mon.entry_number} 
+                  show={show}
+                />
+              ))
+            ) : (
+              <></>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
