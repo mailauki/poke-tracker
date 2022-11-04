@@ -1,5 +1,6 @@
 import React from 'react';
 // import PokeCard from './PokeCard';
+import { CircularProgress } from '@mui/material';
 
 interface Props {
   pokemon: {
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export default function Pokemon({ pokemon, show, number }: Props) {
-  const [bulbasaur, setBulbasaur] = React.useState({name: "", sprites: {back_default: "", front_default: ""}})
+  const [sprites, setSprites] = React.useState({back_default: "", front_default: ""})
   const [clicked, setClicked] = React.useState(false)
   const [checked, setChecked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -20,14 +21,38 @@ export default function Pokemon({ pokemon, show, number }: Props) {
     setChecked(false)
     setClicked(false)
 
-    if(pokemon) {
+    if(pokemon && pokemon.name !== "") {
       setLoading(true)
+      
+      // fetch(pokemon.url)
+      // .then((r) => r.json())
+      // .then((data) => {
+      //   fetch(data.varieties[0].pokemon.url)
+      //   .then((r) => r.json())
+      //   .then((data) => {
+      //     setSprites(data.sprites)
+      //     setLoading(false)
+      //   })
+      // })
+
+      // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+      // .then((r) => r.json())
+      // .then((data) => {
+      //   setSprites(data.sprites)
+      //   setLoading(false)
+      // })
+      // .catch((err) => console.log("error"))
 
       fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-      .then((r) => r.json())
-      .then((data) => {
-        setBulbasaur(data)
-        setLoading(false)
+      .then((r) => {
+        if(r.ok) {
+          r.json().then((data) => {
+            setSprites(data.sprites)
+            setLoading(false)
+          })
+        } else {
+          r.json().then((err) => console.log(err))
+        }
       })
     }
   }, [pokemon])
@@ -53,7 +78,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
         className="PokeCard" 
         onClick={handleClick}
       >
-        {loading ? (
+        {!pokemon ? (
           <p>Loading...</p>
         ) : (
           <>
@@ -65,6 +90,24 @@ export default function Pokemon({ pokemon, show, number }: Props) {
               }} 
               style={{ zIndex: 3, width: "20px", height: "20px" }} 
             />
+            {loading ? (
+              <CircularProgress 
+                sx={{ 
+                  width: "fit-content", 
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto"
+                }} 
+              />
+            ) : (
+              <img 
+                src={clicked ? sprites.back_default : sprites.front_default} 
+                style={{
+                  filter: !checked ? "saturate(0) contrast(0)" : "none"
+                }} 
+                // loading="lazy"
+              />
+            )}
             <div className="info">
               <p>#{padZero(number)}</p>
               <h3
@@ -75,13 +118,6 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                 {pokemon.name}
               </h3>
             </div>
-            <img 
-              src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
-              style={{
-                filter: !checked ? "saturate(0) contrast(0)" : "none"
-              }} 
-              loading="lazy"
-            />
           </>
         )}
       </div>

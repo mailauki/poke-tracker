@@ -107,6 +107,7 @@ function App() {
             const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
             return (
               <option 
+                key={game.name}
                 value={game.name} 
                 selected={selectGame === capName ? true : false}
               >
