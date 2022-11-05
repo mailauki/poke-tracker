@@ -1,6 +1,9 @@
 import React from 'react';
 // import PokeCard from './PokeCard';
-import { CircularProgress, Checkbox } from '@mui/material';
+import { CircularProgress, Checkbox, IconButton, Chip } from '@mui/material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import InfoIcon from '@mui/icons-material/Info';
 import Pokeball from './icons/Pokeball';
 
 interface Props {
@@ -50,7 +53,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
 
   function handleClick(e: React.MouseEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement
-    if(target.tagName !== "INPUT") setClicked(!clicked) 
+    if(["DIV", "SPAN", "H3", "IMG"].includes(target.tagName)) setClicked(!clicked)
   }
 
   function PokeCard() {
@@ -64,6 +67,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
         ) : (
           <>
             <Checkbox 
+              size="medium"
               icon={<Pokeball />} 
               checkedIcon={<Pokeball />} 
               checked={checked} 
@@ -73,9 +77,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
               sx={{ 
                 zIndex: 3, 
                 color: "#ccc", 
-                '&.Mui-checked': {
-                  color: "#f44336"
-                },
+                '&.Mui-checked': { color: "#f44336" },
                 margin: "2px",
                 position: "absolute",
                 top: 0,
@@ -106,8 +108,23 @@ export default function Pokemon({ pokemon, show, number }: Props) {
               >
                 {pokemon.name}
               </h3>
-              <p>#{padZero(number)}</p>
+              <Chip label={`#${padZero(number)}`} sx={{ cursor: "pointer" }} />
             </div>
+            <IconButton
+              onClick={() => console.log("clicked")}
+              sx={{
+                zIndex: 3,
+                margin: "6px",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                '&.MuiButtonBase-root': {
+                  zIndex: 4
+                }
+              }}
+            >
+              <InfoIcon fontSize="inherit" />
+            </IconButton>
           </>
         )}
       </div>

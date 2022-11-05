@@ -76,15 +76,3 @@
   /* margin: 4px auto 14px auto; */
   margin: 4px auto;
 }
-
-.PokeCard p {
-  background-color: rgba(0, 0, 0, 0.25);
-  width: fit-content;
-  padding: 4px 8px;
-  border-radius: 18px;
-  margin: 0 auto;
-}
-
-.MuiInputBase-input {
-  color: #fff;
-}

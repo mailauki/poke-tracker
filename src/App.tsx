@@ -73,9 +73,9 @@ function App() {
   ) 
   
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <div className="App">
+    <div className="App">
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
         <div className="Header">
           <h1>PokeTracker</h1>
           <div style={{ width: "70%", margin: "0 auto" }}>
@@ -120,29 +120,29 @@ function App() {
           </FormControl>
           <h2>{loading ? "Loading..." : regionName}</h2> 
         </div>
+      </ThemeProvider>
 
-        {loading ? (
-          <></>
-        ) : (
-          <>
-            <div className="Pokemon">
-              {showGame.name !== "" ? (
-                showGame.pokemon_entries.map((mon) => (
-                  <Pokemon 
-                    key={mon.entry_number}
-                    pokemon={mon.pokemon_species}
-                    number={mon.entry_number} 
-                    show={show}
-                  />
-                ))
-              ) : (
-                <></>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-    </ThemeProvider>
+      {loading ? (
+        <></>
+      ) : (
+        <>
+          <div className="Pokemon">
+            {showGame.name !== "" ? (
+              showGame.pokemon_entries.map((mon) => (
+                <Pokemon 
+                  key={mon.entry_number}
+                  pokemon={mon.pokemon_species}
+                  number={mon.entry_number} 
+                  show={show}
+                />
+              ))
+            ) : (
+              <></>
+            )}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
