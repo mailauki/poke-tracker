@@ -2,10 +2,19 @@ import React from 'react';
 import './App.css';
 import PokeCard from './components/PokeCard';
 import Pokemon from './components/Pokemon';
+import { TextField, MenuItem, FormControl, FormControlLabel, RadioGroup, Radio, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function App() {
   // const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
   const [games, setGames] = React.useState([{name: "", url: ""}])
+  const filteredGames = games.filter((game) => game.name !== "xd" && game.name !== "colosseum")
   const [show, setShow] = React.useState("all")
   const [selectGame, setSelectGame] = React.useState("national")
   const [showGame, setShowGame] = React.useState({name: "", pokemon_entries: [{entry_number: 0, pokemon_species: {name: "", url: ""}}]})
@@ -75,9 +84,9 @@ function App() {
     )
   }
 
-  function handleChangeGame(e: React.ChangeEvent<HTMLSelectElement>) {
-    const target = e.target as HTMLSelectElement
-    setSelectGame(target.value)
+  function handleChangeGame(e: React.ChangeEvent<HTMLInputElement>) {
+    // const target = e.target as HTMLInputElement
+    setSelectGame(e.target.value)
   }
 
   const regionName = (
@@ -91,69 +100,112 @@ function App() {
   ) 
   
   return (
-    <div className="App">
-      <div className="Header">
-        <h1>PokeTracker</h1>
-        <select 
-          name="games" 
-          onChange={handleChangeGame}
-          style={{ padding: "6px", margin: "10px", width: "70%" }}
-        >
-          <option value="national" selected={selectGame === "national" ? true : false}>National</option>
-          {games.map((game) => {
-            const nameSplit = game.name.split("-")
-            const nameInsertAt = Math.round(nameSplit.length / 2)
-            if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
-            const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
-            return (
-              <option 
-                key={game.name}
-                value={game.name} 
-                selected={selectGame === capName ? true : false}
-              >
-                {capName}
-              </option>
-            )
-          })}
-        </select>
-        <div 
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-evenly",
-            alignItems: "center"
-          }}
-        >
-          <ShowFilterInput name="missing" />
-          <ShowFilterInput name="collected" />
-          <ShowFilterInput name="all" />
-        </div>
-        <h2>{loading ? "Loading..." : regionName}</h2> 
-      </div>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <div className="App">
+        <div className="Header">
+          <h1>PokeTracker</h1>
+          {/* <select 
+            name="games" 
+            onChange={handleChangeGame}
+            style={{ padding: "6px", margin: "10px", width: "70%" }}
+          >
+            <option value="national" selected={selectGame === "national" ? true : false}>National</option>
+            {games.map((game) => {
+              const nameSplit = game.name.split("-")
+              const nameInsertAt = Math.round(nameSplit.length / 2)
+              if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
+              const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
+              return (
+                <option 
+                  key={game.name}
+                  value={game.name} 
+                  selected={selectGame === capName ? true : false}
+                >
+                  {capName}
+                </option>
+              )
+            })}
+          </select> */}
+          <div style={{ width: "70%", margin: "0 auto" }}>
+            <TextField 
+              id="select-game"
+              select
+              label="Select Pokedex"
+              value={selectGame}
+              onChange={handleChangeGame}
+              helperText="Select a game to view it's pokedex"
+              fullWidth
+            >
+              <MenuItem key="national" value="national">
+                National
+              </MenuItem>
+              {filteredGames.map((game) => {
+                const nameSplit = game.name.split("-")
+                const nameInsertAt = Math.round(nameSplit.length / 2)
+                if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
+                const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
 
-      {loading ? (
-        <></>
-      ) : (
-        <>
-          <div className="Pokemon">
-            {showGame.name !== "" ? (
-              showGame.pokemon_entries.map((mon) => (
-                <Pokemon 
-                  key={mon.entry_number}
-                  pokemon={mon.pokemon_species}
-                  number={mon.entry_number} 
-                  show={show}
-                />
-              ))
-            ) : (
-              <></>
-            )}
+                return (
+                  <MenuItem key={game.name} value={game.name} >
+                    {capName}
+                  </MenuItem>
+                )
+              })}
+            </TextField>
           </div>
-        </>
-      )}
-    </div>
+          {/* <div 
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-evenly",
+              alignItems: "center"
+            }}
+          >
+            <ShowFilterInput name="missing" />
+            <ShowFilterInput name="collected" />
+            <ShowFilterInput name="all" />
+          </div> */}
+          <FormControl>
+            <RadioGroup
+              row
+              aria-labelledby="collection-filter"
+              name="collection-filter"
+              value={show}
+              onChange={(e) => setShow(e.target.value)}
+            >
+              <FormControlLabel value="missing" control={<Radio />} label="Missing" />
+              <FormControlLabel value="collected" control={<Radio />} label="Collected" />
+              <FormControlLabel value="all" control={<Radio />} label="All" />
+            </RadioGroup>
+          </FormControl>
+          <h2>{loading ? "Loading..." : regionName}</h2> 
+        </div>
+
+        {loading ? (
+          <></>
+        ) : (
+          <>
+            <div className="Pokemon">
+              {showGame.name !== "" ? (
+                showGame.pokemon_entries.map((mon) => (
+                  <Pokemon 
+                    key={mon.entry_number}
+                    pokemon={mon.pokemon_species}
+                    number={mon.entry_number} 
+                    show={show}
+                  />
+                ))
+              ) : (
+                <></>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 

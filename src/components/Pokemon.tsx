@@ -1,6 +1,7 @@
 import React from 'react';
 // import PokeCard from './PokeCard';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Checkbox } from '@mui/material';
+import Pokeball from './icons/Pokeball';
 
 interface Props {
   pokemon: {
@@ -21,40 +22,40 @@ export default function Pokemon({ pokemon, show, number }: Props) {
     setChecked(false)
     setClicked(false)
 
-    if(pokemon && pokemon.name !== "") {
-      setLoading(true)
+    // if(pokemon && pokemon.name !== "") {
+    //   setLoading(true)
       
-      // fetch(pokemon.url)
-      // .then((r) => r.json())
-      // .then((data) => {
-      //   fetch(data.varieties[0].pokemon.url)
-      //   .then((r) => r.json())
-      //   .then((data) => {
-      //     setSprites(data.sprites)
-      //     setLoading(false)
-      //   })
-      // })
+    //   fetch(pokemon.url)
+    //   .then((r) => r.json())
+    //   .then((data) => {
+    //     fetch(data.varieties[0].pokemon.url)
+    //     .then((r) => r.json())
+    //     .then((data) => {
+    //       setSprites(data.sprites)
+    //       setLoading(false)
+    //     })
+    //   })
 
-      // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-      // .then((r) => r.json())
-      // .then((data) => {
-      //   setSprites(data.sprites)
-      //   setLoading(false)
-      // })
-      // .catch((err) => console.log("error"))
+    //   // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+    //   // .then((r) => r.json())
+    //   // .then((data) => {
+    //   //   setSprites(data.sprites)
+    //   //   setLoading(false)
+    //   // })
+    //   // .catch((err) => console.log("error"))
 
-      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-      .then((r) => {
-        if(r.ok) {
-          r.json().then((data) => {
-            setSprites(data.sprites)
-            setLoading(false)
-          })
-        } else {
-          r.json().then((err) => console.log(err))
-        }
-      })
-    }
+    //   // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+    //   // .then((r) => {
+    //   //   if(r.ok) {
+    //   //     r.json().then((data) => {
+    //   //       setSprites(data.sprites)
+    //   //       setLoading(false)
+    //   //     })
+    //   //   } else {
+    //   //     r.json().then((err) => console.log(err))
+    //   //   }
+    //   // })
+    // }
   }, [pokemon])
 
   function padZero(id: number) {
@@ -82,13 +83,32 @@ export default function Pokemon({ pokemon, show, number }: Props) {
           <p>Loading...</p>
         ) : (
           <>
-            <input 
+            {/* <input 
               type="checkbox" 
               checked={checked} 
               onChange={() => {
                 setChecked(!checked)
               }} 
               style={{ zIndex: 3, width: "20px", height: "20px" }} 
+            /> */}
+            <Checkbox 
+              icon={<Pokeball />} 
+              checkedIcon={<Pokeball />} 
+              checked={checked} 
+              onChange={() => {
+                setChecked(!checked)
+              }} 
+              sx={{ 
+                zIndex: 3, 
+                color: "#ccc", 
+                '&.Mui-checked': {
+                  color: "#f44336"
+                },
+                margin: "2px",
+                position: "absolute",
+                top: 0,
+                left: 0,
+              }}
             />
             {loading ? (
               <CircularProgress 
@@ -105,11 +125,9 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                 style={{
                   filter: !checked ? "saturate(0) contrast(0)" : "none"
                 }} 
-                // loading="lazy"
               />
             )}
             <div className="info">
-              <p>#{padZero(number)}</p>
               <h3
                 style={{
                   filter: !checked ? "opacity(0)" : "none"
@@ -117,6 +135,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
               >
                 {pokemon.name}
               </h3>
+              <p>#{padZero(number)}</p>
             </div>
           </>
         )}

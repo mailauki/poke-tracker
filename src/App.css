@@ -5,12 +5,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
+  color: #fff;
 }
-
-/* .App h1 {
-  font-size: calc(10px + 2vmin);
-} */
 
 .Header {
   position: sticky;
@@ -54,8 +50,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   color: #282c34;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -84,4 +83,8 @@
   padding: 4px 8px;
   border-radius: 18px;
   margin: 0 auto;
+}
+
+.MuiInputBase-input {
+  color: #fff;
 }
