@@ -22,40 +22,20 @@ export default function Pokemon({ pokemon, show, number }: Props) {
     setChecked(false)
     setClicked(false)
 
-    // if(pokemon && pokemon.name !== "") {
-    //   setLoading(true)
+    if(pokemon && pokemon.name !== "") {
+      setLoading(true)
       
-    //   fetch(pokemon.url)
-    //   .then((r) => r.json())
-    //   .then((data) => {
-    //     fetch(data.varieties[0].pokemon.url)
-    //     .then((r) => r.json())
-    //     .then((data) => {
-    //       setSprites(data.sprites)
-    //       setLoading(false)
-    //     })
-    //   })
-
-    //   // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-    //   // .then((r) => r.json())
-    //   // .then((data) => {
-    //   //   setSprites(data.sprites)
-    //   //   setLoading(false)
-    //   // })
-    //   // .catch((err) => console.log("error"))
-
-    //   // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-    //   // .then((r) => {
-    //   //   if(r.ok) {
-    //   //     r.json().then((data) => {
-    //   //       setSprites(data.sprites)
-    //   //       setLoading(false)
-    //   //     })
-    //   //   } else {
-    //   //     r.json().then((err) => console.log(err))
-    //   //   }
-    //   // })
-    // }
+      fetch(pokemon.url)
+      .then((r) => r.json())
+      .then((data) => {
+        fetch(data.varieties[0].pokemon.url)
+        .then((r) => r.json())
+        .then((data) => {
+          setSprites(data.sprites)
+          setLoading(false)
+        })
+      })
+    }
   }, [pokemon])
 
   function padZero(id: number) {
@@ -83,14 +63,6 @@ export default function Pokemon({ pokemon, show, number }: Props) {
           <p>Loading...</p>
         ) : (
           <>
-            {/* <input 
-              type="checkbox" 
-              checked={checked} 
-              onChange={() => {
-                setChecked(!checked)
-              }} 
-              style={{ zIndex: 3, width: "20px", height: "20px" }} 
-            /> */}
             <Checkbox 
               icon={<Pokeball />} 
               checkedIcon={<Pokeball />} 
@@ -114,9 +86,8 @@ export default function Pokemon({ pokemon, show, number }: Props) {
               <CircularProgress 
                 sx={{ 
                   width: "fit-content", 
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto"
+                  height: "fit-content",
+                  margin: "18% auto"
                 }} 
               />
             ) : (

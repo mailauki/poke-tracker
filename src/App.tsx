@@ -58,34 +58,7 @@ function App() {
     }
   }, [selectGame])
 
-  function ShowFilterInput({name}: {name: string}) {
-    const capName = name.charAt(0).toUpperCase() + name.slice(1)
-
-    return (
-      <div 
-        style={{ 
-          display: "flex",
-          flexDirection: "row", 
-          alignItems: "center" 
-        }}
-      >
-        <label>{capName}</label>
-        <input 
-          type="radio" 
-          value={name}
-          checked={show === name ? true : false}
-          onChange={(e) => setShow(e.target.value)}
-          style={{
-            width: "20px",
-            height: "20px"
-          }}
-        />
-      </div>
-    )
-  }
-
   function handleChangeGame(e: React.ChangeEvent<HTMLInputElement>) {
-    // const target = e.target as HTMLInputElement
     setSelectGame(e.target.value)
   }
 
@@ -105,28 +78,6 @@ function App() {
       <div className="App">
         <div className="Header">
           <h1>PokeTracker</h1>
-          {/* <select 
-            name="games" 
-            onChange={handleChangeGame}
-            style={{ padding: "6px", margin: "10px", width: "70%" }}
-          >
-            <option value="national" selected={selectGame === "national" ? true : false}>National</option>
-            {games.map((game) => {
-              const nameSplit = game.name.split("-")
-              const nameInsertAt = Math.round(nameSplit.length / 2)
-              if(nameSplit.length >= 2) nameSplit.splice(nameInsertAt, 0, "&")
-              const capName = nameSplit.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
-              return (
-                <option 
-                  key={game.name}
-                  value={game.name} 
-                  selected={selectGame === capName ? true : false}
-                >
-                  {capName}
-                </option>
-              )
-            })}
-          </select> */}
           <div style={{ width: "70%", margin: "0 auto" }}>
             <TextField 
               id="select-game"
@@ -154,20 +105,6 @@ function App() {
               })}
             </TextField>
           </div>
-          {/* <div 
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-evenly",
-              alignItems: "center"
-            }}
-          >
-            <ShowFilterInput name="missing" />
-            <ShowFilterInput name="collected" />
-            <ShowFilterInput name="all" />
-          </div> */}
           <FormControl>
             <RadioGroup
               row
