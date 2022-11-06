@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import PokeCard from './components/PokeCard';
 import Pokemon from './components/Pokemon';
-import { TextField, MenuItem, FormControl, FormControlLabel, RadioGroup, Radio, CssBaseline } from '@mui/material';
+import { TextField, MenuItem, FormControl, FormControlLabel, RadioGroup, Radio, CssBaseline, Typography, Divider, Tabs, Tab, Box } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const darkTheme = createTheme({
@@ -77,16 +77,23 @@ function App() {
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <div className="Header">
-          <h1>PokeTracker</h1>
+          <Typography 
+            variant="h4"
+            component="div"
+            sx={{ margin: 2 }}
+          >
+            PokeTracker
+          </Typography>
           <div style={{ width: "70%", margin: "0 auto" }}>
             <TextField 
               id="select-game"
               select
-              label="Select Pokedex"
+              label="Pokedex"
               value={selectGame}
               onChange={handleChangeGame}
               helperText="Select a game to view it's pokedex"
               fullWidth
+              size="small"
             >
               <MenuItem key="national" value="national">
                 National
@@ -105,7 +112,7 @@ function App() {
               })}
             </TextField>
           </div>
-          <FormControl>
+          {/* <FormControl>
             <RadioGroup
               row
               aria-labelledby="collection-filter"
@@ -117,8 +124,24 @@ function App() {
               <FormControlLabel value="collected" control={<Radio />} label="Collected" />
               <FormControlLabel value="all" control={<Radio />} label="All" />
             </RadioGroup>
-          </FormControl>
-          <h2>{loading ? "Loading..." : regionName}</h2> 
+          </FormControl> */}
+          <Tabs 
+            value={show} 
+            onChange={(e: React.SyntheticEvent, newValue: string) => setShow(newValue)}
+            centered
+            sx={{ borderBottom: 1, borderColor: "divider" }}
+          >
+            <Tab value="all" label="All" />
+            <Tab value="collected" label="Collected" />
+            <Tab value="missing" label="Missing" />
+          </Tabs>
+          <Typography 
+            variant="h5"
+            component="div"
+            sx={{ margin: 1 }}
+          >
+            {loading ? "Loading..." : regionName}
+          </Typography> 
         </div>
       </ThemeProvider>
 
