@@ -1,4 +1,7 @@
 import React from 'react';
+import { CircularProgress, Checkbox, IconButton, Chip } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Pokeball from './icons/Pokeball';
 
 interface Props {
   pokemon: {
@@ -6,25 +9,34 @@ interface Props {
     url: string
   }
   number: number
+  onCheck: (arg: boolean) => void
 }
 
-export default function PokeCard({ pokemon, number }: Props) {
-  const [bulbasaur, setBulbasaur] = React.useState({name: "", sprites: {back_default: "", front_default: ""}})
+export default function PokeCard({ pokemon, number, onCheck }: Props) {
+  const [sprites, setSprites] = React.useState({back_default: "", front_default: ""})
   const [clicked, setClicked] = React.useState(false)
   const [checked, setChecked] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
     setChecked(false)
     setClicked(false)
 
-    if(pokemon.name) {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+    if(pokemon && pokemon.name !== "") {
+      setLoading(true)
+      
+      fetch(pokemon.url)
       .then((r) => r.json())
       .then((data) => {
-        setBulbasaur(data)
+        fetch(data.varieties[0].pokemon.url)
+        .then((r) => r.json())
+        .then((data) => {
+          setSprites(data.sprites)
+          setLoading(false)
+        })
       })
     }
-  }, [pokemon.name])
+  }, [pokemon])
 
   function padZero(id: number) {
     if(id <= 9) {
@@ -38,7 +50,7 @@ export default function PokeCard({ pokemon, number }: Props) {
 
   function handleClick(e: React.MouseEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement
-    if(target.tagName !== "INPUT") setClicked(!clicked) 
+    if(["DIV", "SPAN", "H3", "IMG"].includes(target.tagName)) setClicked(!clicked)
   }
 
   return (
@@ -46,30 +58,72 @@ export default function PokeCard({ pokemon, number }: Props) {
       className="PokeCard" 
       onClick={handleClick}
     >
-      <input 
-        type="checkbox" 
-        checked={checked} 
-        onChange={() => {
-          setChecked(!checked)
-        }} 
-        style={{ zIndex: 3, width: "20px", height: "20px" }} 
-      />
-      <div className="info">
-        <p>#{padZero(number)}</p>
-        <h3
-          style={{
-            filter: !checked ? "opacity(0)" : "none"
-          }}
-        >
-          {pokemon.name}
-        </h3>
-      </div>
-      <img 
-        src={clicked ? bulbasaur.sprites.back_default : bulbasaur.sprites.front_default} 
-        style={{
-          filter: !checked ? "saturate(0) contrast(0)" : "none"
-        }} 
-      />
+      {!pokemon ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <Checkbox 
+            size="medium"
+            icon={<Pokeball />} 
+            checkedIcon={<Pokeball />} 
+            checked={checked} 
+            onChange={() => {
+              setChecked(!checked)
+              onCheck(!checked)
+            }} 
+            sx={{ 
+              zIndex: 3, 
+              color: "#ccc", 
+              '&.Mui-checked': { color: "#f44336" },
+              margin: "2px",
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+          />
+          {loading ? (
+            <CircularProgress 
+              sx={{ 
+                width: "fit-content", 
+                height: "fit-content",
+                margin: "18% auto"
+              }} 
+            />
+          ) : (
+            <img 
+              src={clicked ? sprites.back_default : sprites.front_default} 
+              style={{
+                filter: !checked ? "saturate(0) contrast(0)" : "none"
+              }} 
+            />
+          )}
+          <div className="info">
+            <h3
+              style={{
+                filter: !checked ? "opacity(0)" : "none"
+              }}
+            >
+              {pokemon.name}
+            </h3>
+            <Chip label={`#${padZero(number)}`} sx={{ cursor: "pointer" }} />
+          </div>
+          <IconButton
+            onClick={() => console.log("clicked")}
+            sx={{
+              zIndex: 3,
+              margin: "6px",
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+              '&.MuiButtonBase-root': {
+                zIndex: 4
+              }
+            }}
+          >
+            <MoreVertIcon fontSize="inherit" />
+          </IconButton>
+        </>
+      )}
     </div>
   )
 }
