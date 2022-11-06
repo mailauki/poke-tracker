@@ -24,6 +24,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                   pokemon={pokemon} 
                   number={number} 
                   onCheck={(check) => setChecked(check)}
+                  checked={checked}
                 />
               ) : (
                 <></>
@@ -37,6 +38,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                   pokemon={pokemon} 
                   number={number} 
                   onCheck={(check) => setChecked(check)}
+                  checked={checked}
                 />
               ) : (
                 <></>
@@ -49,6 +51,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                 pokemon={pokemon} 
                 number={number} 
                 onCheck={(check) => setChecked(check)}
+                checked={checked}
               />
             )
           }

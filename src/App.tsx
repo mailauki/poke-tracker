@@ -1,8 +1,7 @@
 import React from 'react';
 import './App.css';
-import PokeCard from './components/PokeCard';
-import Pokemon from './components/Pokemon';
-import { TextField, MenuItem, FormControl, FormControlLabel, RadioGroup, Radio, CssBaseline, Typography, Divider, Tabs, Tab, Box } from '@mui/material';
+import Pokedex from './components/Pokedex';
+import { TextField, MenuItem, CssBaseline, Typography, Tabs, Tab } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const darkTheme = createTheme({
@@ -12,21 +11,28 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  // const [pokemon, setPokemon] = React.useState([{name: "", url: ""}])
   const [games, setGames] = React.useState([{name: "", url: ""}])
   const filteredGames = games.filter((game) => game.name !== "xd" && game.name !== "colosseum")
   const [show, setShow] = React.useState("all")
   const [selectGame, setSelectGame] = React.useState("national")
-  const [showGame, setShowGame] = React.useState({name: "", pokemon_entries: [{entry_number: 0, pokemon_species: {name: "", url: ""}}]})
+  const [pokedexes, setPokedexes] = React.useState([{name: "", url: ""}])
   const [loading, setLoading] = React.useState(false)
 
-  React.useEffect(() => {
-    // fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
-    // .then((r) => r.json())
-    // .then((data) => {
-    //   setPokemon(data.results)
-    // })
+  function titleCase(title: string) {
+    if(title.includes("-")) {
+      return title.split("-").map((word) => (
+        word === "of" ? (
+          word
+        ) : (
+          word.charAt(0).toUpperCase() + word.slice(1)
+        )
+      )).join(" ")
+    } else {
+      return title.charAt(0).toUpperCase() + title.slice(1)
+    }
+  }
 
+  React.useEffect(() => {
     fetch("https://pokeapi.co/api/v2/version-group")
     .then((r) => r.json())
     .then((data) => {
@@ -35,42 +41,23 @@ function App() {
   }, [])
 
   React.useEffect(() => {
-    setLoading(true)
-      
     if(selectGame !== "national") {
+      setLoading(true)
+
       fetch(`https://pokeapi.co/api/v2/version-group/${selectGame}`)
       .then((r) => r.json())
       .then((data) => {
-        fetch(data.pokedexes[0].url)
-        .then((r) => r.json())
-        .then((pokedex) => {
-          setShowGame(pokedex)
-          setLoading(false)
-        })
-      })
-    } else {
-      fetch("https://pokeapi.co/api/v2/pokedex/1")
-      .then((r) => r.json())
-      .then((pokedex) => {
-        setShowGame(pokedex)
+        setPokedexes(data.pokedexes)
         setLoading(false)
       })
+    } else {
+      setPokedexes([{ name: "national", url: "https://pokeapi.co/api/v2/pokedex/1" }])
     }
   }, [selectGame])
 
   function handleChangeGame(e: React.ChangeEvent<HTMLInputElement>) {
     setSelectGame(e.target.value)
   }
-
-  const regionName = (
-    showGame.name.includes("-") ? (
-      showGame.name.split("-").map((word) => (
-        word.charAt(0).toUpperCase() + word.slice(1)
-      )).join(" ")
-    ) : (
-      showGame.name.charAt(0).toUpperCase() + showGame.name.slice(1)
-    )
-  ) 
   
   return (
     <div className="App">
@@ -112,19 +99,6 @@ function App() {
               })}
             </TextField>
           </div>
-          {/* <FormControl>
-            <RadioGroup
-              row
-              aria-labelledby="collection-filter"
-              name="collection-filter"
-              value={show}
-              onChange={(e) => setShow(e.target.value)}
-            >
-              <FormControlLabel value="missing" control={<Radio />} label="Missing" />
-              <FormControlLabel value="collected" control={<Radio />} label="Collected" />
-              <FormControlLabel value="all" control={<Radio />} label="All" />
-            </RadioGroup>
-          </FormControl> */}
           <Tabs 
             value={show} 
             onChange={(e: React.SyntheticEvent, newValue: string) => setShow(newValue)}
@@ -135,23 +109,41 @@ function App() {
             <Tab value="collected" label="Collected" />
             <Tab value="missing" label="Missing" />
           </Tabs>
+        </div>
+      </ThemeProvider>
+
+      <>
+        {!loading ? (
+          pokedexes.map((dex) => (
+            <>
+              <Typography 
+                variant="h5"
+                component="div"
+                sx={{ margin: 1 }}
+              >
+                {titleCase(dex.name)}
+              </Typography>
+              <Pokedex url={dex.url} show={show} />
+            </>
+          ))
+        ) : (
           <Typography 
             variant="h5"
             component="div"
             sx={{ margin: 1 }}
           >
-            {loading ? "Loading..." : regionName}
-          </Typography> 
-        </div>
-      </ThemeProvider>
+            Loading...
+          </Typography>
+        )}
+      </>
 
       {loading ? (
         <></>
       ) : (
         <>
-          <div className="Pokemon">
-            {showGame.name !== "" ? (
-              showGame.pokemon_entries.map((mon) => (
+          {/* <div className="Pokemon">
+            {showPokedex.name !== "" ? (
+              showPokedex.pokemon_entries.map((mon) => (
                 <Pokemon 
                   key={mon.entry_number}
                   pokemon={mon.pokemon_species}
@@ -162,7 +154,7 @@ function App() {
             ) : (
               <></>
             )}
-          </div>
+          </div> */}
         </>
       )}
     </div>

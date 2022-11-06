@@ -10,16 +10,17 @@ interface Props {
   }
   number: number
   onCheck: (arg: boolean) => void
+  checked: boolean
 }
 
-export default function PokeCard({ pokemon, number, onCheck }: Props) {
+export default function PokeCard({ pokemon, number, onCheck, checked }: Props) {
   const [sprites, setSprites] = React.useState({back_default: "", front_default: ""})
   const [clicked, setClicked] = React.useState(false)
-  const [checked, setChecked] = React.useState(false)
+  // const [checked, setChecked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
-    setChecked(false)
+    // setChecked(false)
     setClicked(false)
 
     if(pokemon && pokemon.name !== "") {
@@ -68,7 +69,7 @@ export default function PokeCard({ pokemon, number, onCheck }: Props) {
             checkedIcon={<Pokeball />} 
             checked={checked} 
             onChange={() => {
-              setChecked(!checked)
+              // setChecked(!checked)
               onCheck(!checked)
             }} 
             sx={{ 
