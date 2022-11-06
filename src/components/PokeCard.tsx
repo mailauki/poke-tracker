@@ -1,7 +1,14 @@
 import React from 'react';
 import { CircularProgress, Checkbox, IconButton, Chip } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Pokeball from './icons/Pokeball';
+
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+})
 
 interface Props {
   pokemon: {
@@ -55,76 +62,77 @@ export default function PokeCard({ pokemon, number, onCheck, checked }: Props) {
   }
 
   return (
-    <div 
-      className="PokeCard" 
-      onClick={handleClick}
-    >
-      {!pokemon ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <Checkbox 
-            size="medium"
-            icon={<Pokeball />} 
-            checkedIcon={<Pokeball />} 
-            checked={checked} 
-            onChange={() => {
-              // setChecked(!checked)
-              onCheck(!checked)
-            }} 
-            sx={{ 
-              zIndex: 3, 
-              color: "#ccc", 
-              '&.Mui-checked': { color: "#f44336" },
-              margin: "2px",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          />
-          {loading ? (
-            <CircularProgress 
+    <ThemeProvider theme={lightTheme}>
+      <div 
+        className="PokeCard" 
+        onClick={handleClick}
+      >
+        {!pokemon ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <Checkbox 
+              size="medium"
+              icon={<Pokeball />} 
+              checkedIcon={<Pokeball />} 
+              checked={checked} 
+              onChange={() => {
+                onCheck(!checked)
+              }} 
               sx={{ 
-                width: "fit-content", 
-                height: "fit-content",
-                margin: "18% auto"
-              }} 
+                zIndex: 3, 
+                color: "#ccc", 
+                '&.Mui-checked': { color: "#f44336" },
+                margin: "2px",
+                position: "absolute",
+                top: 0,
+                left: 0,
+              }}
             />
-          ) : (
-            <img 
-              src={clicked ? sprites.back_default : sprites.front_default} 
-              style={{
-                filter: !checked ? "saturate(0) contrast(0)" : "none"
-              }} 
-            />
-          )}
-          <div className="info">
-            <h3
-              style={{
-                filter: !checked ? "opacity(0)" : "none"
+            {loading ? (
+              <CircularProgress 
+                sx={{ 
+                  width: "fit-content", 
+                  height: "fit-content",
+                  margin: "18% auto"
+                }} 
+              />
+            ) : (
+              <img 
+                src={clicked ? sprites.back_default : sprites.front_default} 
+                style={{
+                  filter: !checked ? "saturate(0) contrast(0)" : "none"
+                }} 
+              />
+            )}
+            <div className="info">
+              <h3
+                style={{
+                  filter: !checked ? "opacity(0)" : "none"
+                }}
+              >
+                {pokemon.name}
+              </h3>
+              <Chip label={`#${padZero(number)}`} sx={{ cursor: "pointer" }} />
+            </div>
+            <IconButton
+              onClick={() => console.log("clicked")}
+              sx={{
+                zIndex: 3,
+                margin: "6px",
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                '&.MuiButtonBase-root': {
+                  zIndex: 4
+                }
               }}
             >
-              {pokemon.name}
-            </h3>
-            <Chip label={`#${padZero(number)}`} sx={{ cursor: "pointer" }} />
-          </div>
-          <IconButton
-            onClick={() => console.log("clicked")}
-            sx={{
-              zIndex: 3,
-              margin: "6px",
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              '&.MuiButtonBase-root': {
-                zIndex: 4
-              }
-            }}
-          >
-            <MoreVertIcon fontSize="inherit" />
-          </IconButton>
-        </>
-      )}
-    </div>
+              <MoreVertIcon fontSize="inherit" />
+            </IconButton>
+          </>
+        )}
+      </div>
+    </ThemeProvider>
   )
 }
