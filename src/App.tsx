@@ -126,6 +126,7 @@ function App() {
           {!loading ? (
             pokedexes.map((dex) => (
               <div 
+                key={dex.name}
                 style={{ 
                   width: "calc(100% - 2rem)", 
                   margin: "1rem",
@@ -147,7 +148,7 @@ function App() {
                   </AccordionSummary>
                   <AccordionDetails>
                     {dex.name !== "" ? (
-                      <Pokedex key={dex.name} url={dex.url} show={show} />
+                      <Pokedex url={dex.url} show={show} />
                     ) : (
                       <Typography>Nothing Here</Typography>
                     )}

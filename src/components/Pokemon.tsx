@@ -8,9 +8,10 @@ interface Props {
   }
   show: string
   number: number
+  onClickMore: (arg: boolean) => void
 }
 
-export default function Pokemon({ pokemon, show, number }: Props) {
+export default function Pokemon({ pokemon, show, number, onClickMore }: Props) {
   const [checked, setChecked] = React.useState(false)
 
   return (
@@ -25,6 +26,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                   number={number} 
                   onCheck={(check) => setChecked(check)}
                   checked={checked}
+                  onClickMore={onClickMore}
                 />
               ) : (
                 <></>
@@ -39,6 +41,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                   number={number} 
                   onCheck={(check) => setChecked(check)}
                   checked={checked}
+                  onClickMore={onClickMore}
                 />
               ) : (
                 <></>
@@ -52,6 +55,7 @@ export default function Pokemon({ pokemon, show, number }: Props) {
                 number={number} 
                 onCheck={(check) => setChecked(check)}
                 checked={checked}
+                onClickMore={onClickMore}
               />
             )
           }

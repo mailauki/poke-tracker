@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircularProgress, Checkbox, IconButton, Chip } from '@mui/material';
+import { CircularProgress, Checkbox, IconButton, Chip, Typography } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Pokeball from './icons/Pokeball';
@@ -18,16 +18,27 @@ interface Props {
   number: number
   onCheck: (arg: boolean) => void
   checked: boolean
+  onClickMore: (arg: boolean) => void
 }
 
-export default function PokeCard({ pokemon, number, onCheck, checked }: Props) {
+export default function PokeCard({ pokemon, number, onCheck, checked, onClickMore }: Props) {
   const [sprites, setSprites] = React.useState({back_default: "", front_default: ""})
+  const [types, setTypes] = React.useState({ types: [{ slot: 0, type: { name: "", url: "" } }] })
+  const [info, setInfo] = React.useState({ 
+    name: "", 
+    capture_rate: 0, 
+    evolution_chain: { url: "" }, 
+    generation: { name: "", url: ""},
+    habitat: { name: "", url: "" },
+    has_gender_difference: false, 
+    is_legendary: false, 
+    is_mythical: false, 
+    types: [{ slot: 0, type: { name: "", url: "" } }] 
+  })
   const [clicked, setClicked] = React.useState(false)
-  // const [checked, setChecked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
-    // setChecked(false)
     setClicked(false)
 
     if(pokemon && pokemon.name !== "") {
@@ -36,10 +47,22 @@ export default function PokeCard({ pokemon, number, onCheck, checked }: Props) {
       fetch(pokemon.url)
       .then((r) => r.json())
       .then((data) => {
+        setInfo({ 
+          ...info, 
+          name: data.name, 
+          capture_rate: data.capture_rate, 
+          evolution_chain: data.evolution_chain, 
+          generation: data.generation,
+          habitat: data.habitat,
+          has_gender_difference: data.has_gender_difference, 
+          is_legendary: data.is_legendary, 
+          is_mythical: data.is_mythical 
+        })
         fetch(data.varieties[0].pokemon.url)
         .then((r) => r.json())
         .then((data) => {
           setSprites(data.sprites)
+          setTypes(data.types)
           setLoading(false)
         })
       })
@@ -106,20 +129,31 @@ export default function PokeCard({ pokemon, number, onCheck, checked }: Props) {
               />
             )}
             <div className="info">
-              <h3
-                style={{
+              <Typography
+                variant="button"
+                sx={{
+                  textShadow: "0 0 2px #fff, 0 0 4px #fff",
                   filter: !checked ? "opacity(0)" : "none"
                 }}
               >
                 {pokemon.name}
-              </h3>
-              <Chip label={`#${padZero(number)}`} sx={{ cursor: "pointer" }} />
+              </Typography>
+              <Chip 
+                label={`#${padZero(number)}`} 
+                sx={{ 
+                  cursor: "pointer", 
+                  fontWeight: "bold"
+                }} 
+              />
             </div>
             <IconButton
-              onClick={() => console.log("clicked")}
+              onClick={() => {
+                console.log({...info, types, sprites})
+                onClickMore(true)
+              }}
               sx={{
                 zIndex: 3,
-                margin: "6px",
+                margin: "6px 2px",
                 position: "absolute",
                 bottom: 0,
                 right: 0,
