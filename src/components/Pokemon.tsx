@@ -8,7 +8,7 @@ interface Props {
   }
   show: string
   number: number
-  onClickMore: (arg: boolean) => void
+  onClickMore: (arg: any) => void
 }
 
 export default function Pokemon({ pokemon, show, number, onClickMore }: Props) {

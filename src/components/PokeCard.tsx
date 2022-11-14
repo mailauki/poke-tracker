@@ -18,7 +18,7 @@ interface Props {
   number: number
   onCheck: (arg: boolean) => void
   checked: boolean
-  onClickMore: (arg: boolean) => void
+  onClickMore: (arg: any) => void
 }
 
 export default function PokeCard({ pokemon, number, onCheck, checked, onClickMore }: Props) {
@@ -33,7 +33,8 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
     has_gender_difference: false, 
     is_legendary: false, 
     is_mythical: false, 
-    types: [{ slot: 0, type: { name: "", url: "" } }] 
+    types: [{ slot: 0, type: { name: "", url: "" } }], 
+    varieties: [{pokemon: {name: "", url: ""}}]
   })
   const [clicked, setClicked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -56,7 +57,8 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
           habitat: data.habitat,
           has_gender_difference: data.has_gender_difference, 
           is_legendary: data.is_legendary, 
-          is_mythical: data.is_mythical 
+          is_mythical: data.is_mythical, 
+          varieties: data.varieties
         })
         fetch(data.varieties[0].pokemon.url)
         .then((r) => r.json())
@@ -147,9 +149,10 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
               />
             </div>
             <IconButton
+              disabled={loading ? true : false}
               onClick={() => {
-                console.log({...info, types, sprites})
-                onClickMore(true)
+                // console.log({...info, types, sprites})
+                onClickMore({ pokemon: {...info, types, number: number} })
               }}
               sx={{
                 zIndex: 3,
