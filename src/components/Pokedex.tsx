@@ -1,8 +1,7 @@
 import React from 'react';
-import Pokemon from './Pokemon';
-// import PokeDetail from './PokeDetail';
-// import { IconButton, Tooltip } from '@mui/material';
-// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchPokemon } from '../features/pokemon/pokemonSlice';
+import PokeCard from './PokeCard';
 
 interface Props {
   url: string
@@ -11,35 +10,38 @@ interface Props {
 }
 
 export default function Pokedex({ url, show, onClickMore }: Props) {
-  const [pokemon, setPokemon] = React.useState([{ entry_number: 0, pokemon_species: { name: "", url: "" } }])
-  const [loading, setLoading] = React.useState(false)
+  const pokemon = useSelector((state) => state.pokemon.entities)
+  const loading = useSelector((state) => state.pokemon.status)
+  const dispatch = useDispatch()
 
   React.useEffect(() => {
-    if(url) {
-      setLoading(true)
+    dispatch(fetchPokemon(url))
+  }, [dispatch])
 
-      fetch(url)
-      .then((r) => r.json())
-      .then((data) => {
-        setPokemon(data.pokemon_entries)
-        setLoading(false)
-      })
+  const filteredPokemon = (() => {
+    switch(show) {
+      case "collected": {
+        pokemon.filter((mon) => mon.checked)
+      }
+      case "missing": {
+        pokemon.filter((mon) => !mon.checked)
+      }
+      default: {
+        pokemon
+      }
     }
-  }, [url])
+  })()
 
   return (
     <div className="Pokemon">
-      {loading ? (
+      {loading === "loading" ? (
         <p>Loading...</p>
       ) : (
         <>
-          {pokemon.map((mon) => (
+          {filteredPokemon.map((mon) => (
             <div>
-              <Pokemon 
-                key={mon.entry_number}
-                pokemon={mon.pokemon_species}
-                number={mon.entry_number} 
-                show={show}
+              <PokeCard 
+                pokemon={mon}
                 onClickMore={onClickMore}
               />
             </div>

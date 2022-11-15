@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { checkAdded, checkRemoved } from '../features/pokemon/pokemonSlice';
 import { CircularProgress, Checkbox, IconButton, Chip, Typography } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -12,16 +14,17 @@ const lightTheme = createTheme({
 
 interface Props {
   pokemon: {
-    name: string, 
-    url: string
+    entry_number: number
+    pokemon_species: {
+      name: string, 
+      url: string
+    }
+    checked?: boolean
   }
-  number: number
-  onCheck: (arg: boolean) => void
-  checked: boolean
   onClickMore: (arg: any) => void
 }
 
-export default function PokeCard({ pokemon, number, onCheck, checked, onClickMore }: Props) {
+export default function PokeCard({ pokemon, onClickMore }: Props) {
   const [sprites, setSprites] = React.useState({back_default: "", front_default: ""})
   const [types, setTypes] = React.useState({ types: [{ slot: 0, type: { name: "", url: "" } }] })
   const [info, setInfo] = React.useState({ 
@@ -34,18 +37,19 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
     is_legendary: false, 
     is_mythical: false, 
     types: [{ slot: 0, type: { name: "", url: "" } }], 
-    varieties: [{pokemon: {name: "", url: ""}}]
+    varieties: [{ pokemon: {name: "", url: ""} }]
   })
   const [clicked, setClicked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
+  const dispatch = useDispatch()
 
   React.useEffect(() => {
     setClicked(false)
 
-    if(pokemon && pokemon.name !== "") {
+    if(pokemon && pokemon.pokemon_species.name !== "") {
       setLoading(true)
       
-      fetch(pokemon.url)
+      fetch(pokemon.pokemon_species.url)
       .then((r) => r.json())
       .then((data) => {
         setInfo({ 
@@ -100,9 +104,9 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
               size="medium"
               icon={<Pokeball />} 
               checkedIcon={<Pokeball />} 
-              checked={checked} 
+              checked={pokemon.checked} 
               onChange={() => {
-                onCheck(!checked)
+                pokemon.checked ? dispatch(checkRemoved(pokemon)) : dispatch(checkAdded(pokemon))
               }} 
               sx={{ 
                 zIndex: 3, 
@@ -126,7 +130,7 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
               <img 
                 src={clicked ? sprites.back_default : sprites.front_default} 
                 style={{
-                  filter: !checked ? "saturate(0) contrast(0)" : "none"
+                  filter: !pokemon.checked ? "saturate(0) contrast(0)" : "none"
                 }} 
               />
             )}
@@ -135,13 +139,13 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
                 variant="button"
                 sx={{
                   textShadow: "0 0 2px #fff, 0 0 4px #fff",
-                  filter: !checked ? "opacity(0)" : "none"
+                  filter: !pokemon.checked ? "opacity(0)" : "none"
                 }}
               >
-                {pokemon.name}
+                {pokemon.pokemon_species.name}
               </Typography>
               <Chip 
-                label={`#${padZero(number)}`} 
+                label={`#${padZero(pokemon.entry_number)}`} 
                 sx={{ 
                   cursor: "pointer", 
                   fontWeight: "bold"
@@ -151,8 +155,7 @@ export default function PokeCard({ pokemon, number, onCheck, checked, onClickMor
             <IconButton
               disabled={loading ? true : false}
               onClick={() => {
-                // console.log({...info, types, sprites})
-                onClickMore({ pokemon: {...info, types, number: number} })
+                onClickMore({ pokemon: {...info, types, number: pokemon.entry_number} })
               }}
               sx={{
                 zIndex: 3,

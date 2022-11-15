@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
 import Pokedex from './components/Pokedex';
-// import PokeCard from './components/PokeCard';
 import PokeDetail from './components/PokeDetail';
 import { TextField, MenuItem, CssBaseline, Typography, Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, IconButton, Tooltip, Divider } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -100,6 +99,7 @@ function App() {
               helperText="Select a game to view it's pokedex"
               fullWidth
               size="small"
+              sx={{ display: showDetail ? "none" : "" }}
             >
               {filteredGames.map((game) => {
                 return (

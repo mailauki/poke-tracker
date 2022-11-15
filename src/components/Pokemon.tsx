@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function Pokemon({ pokemon, show, number, onClickMore }: Props) {
-  const [checked, setChecked] = React.useState(false)
+  const [checked, setChecked] = React.useState({entry_number: number, pokemon_species: {...pokemon}, checked: false})
 
   return (
     <>
@@ -25,7 +25,7 @@ export default function Pokemon({ pokemon, show, number, onClickMore }: Props) {
                   pokemon={pokemon} 
                   number={number} 
                   onCheck={(check) => setChecked(check)}
-                  checked={checked}
+                  checked={checked.checked}
                   onClickMore={onClickMore}
                 />
               ) : (
@@ -40,7 +40,7 @@ export default function Pokemon({ pokemon, show, number, onClickMore }: Props) {
                   pokemon={pokemon} 
                   number={number} 
                   onCheck={(check) => setChecked(check)}
-                  checked={checked}
+                  checked={checked.checked}
                   onClickMore={onClickMore}
                 />
               ) : (
@@ -54,7 +54,7 @@ export default function Pokemon({ pokemon, show, number, onClickMore }: Props) {
                 pokemon={pokemon} 
                 number={number} 
                 onCheck={(check) => setChecked(check)}
-                checked={checked}
+                checked={checked.checked}
                 onClickMore={onClickMore}
               />
             )
